@@ -91,7 +91,14 @@ escenes = {
     },
 
     Escena.CASTELL_INTERIOR: {
-        "descripcio": "🏰 Dins del castell hi ha:\n1. Un tresor brillant 💎\n2. Un passadís secret 🕳️\n3. Un guardià dormit 💤",
+        "descripcio": f"""🏰 Dins del castell hi ha:
++-----------------------+
+| 💎 Un tresor brillant |
+| 🕳️ Un passadís secret |
+| 💤 Un guardià dormit  |
++-----------------------+
+¿Com vols reaccionar?
+""",
         "opcions": [
             OPCIO_AGAFAR_TRESOR,
             OPCIO_EXPLORAR_PASSADIS,

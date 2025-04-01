@@ -1,26 +1,3 @@
-from emojiquest_respostes_joc import (
-    resposta_bosc_llop_amic,
-    resposta_bosc_llop_lluita,
-    resposta_bosc_llop_fugir,
-    resposta_bosc_llop_estrategia,
-    resposta_bosc_llop_tornar_cruilla,
-    resposta_muntanya_roca_trencar,
-    resposta_muntanya_roca_buscar_cami,
-    resposta_muntanya_roca_pensar,
-    resposta_muntanya_roca_tornar_cruilla,
-    resposta_riu_corrent_lluitar,
-    resposta_riu_corrent_buscar_pont,
-    resposta_riu_corrent_pensar,
-    resposta_riu_corrent_amic,
-    resposta_castell_si_clau,
-    resposta_castell_no_clau,
-    resposta_cruilla_bosc,
-    resposta_cruilla_muntanya,
-    resposta_cruilla_riu,
-    resposta_muntanya_roca_ajuda,
-    resposta_riu_corrent_tornar_cruilla
-)
-
 import time
 from typing import Optional, Dict, List, Any
 
@@ -37,11 +14,11 @@ def triar_accio(opcions: List[Opcio]) -> Optional[Opcio]:
                 print("No hi ha opcions vàlides disponibles. El joc ha acabat.")
                 return None
 
-            entrada = input(f"Tria una opció (per índex o emoji {', '.join([opcio.emoji for opcio in opcions_valides])}): ")
+            entrada = input(f"Tria una opció (per índex o emoji {', '.join([opcio.emoji.lstrip().rstrip() for opcio in opcions_valides])}): ").lstrip().rstrip()
 
             # Comprovem si s'ha introduït un emoji vàlid
             for opcio in opcions_valides:
-                if entrada == opcio.emoji:
+                if entrada == opcio.emoji.lstrip().rstrip():
                     return opcio
 
             # Comprovem si s'ha introduït un índex vàlid
@@ -60,7 +37,7 @@ def triar_accio(opcions: List[Opcio]) -> Optional[Opcio]:
 # Funció per mostrar les opcions disponibles
 def mostrar_opcions(opcions: List[Opcio]) -> None:
     for opcio in opcions:
-        print(f"{opcio.valor_int}️⃣ {opcio.emoji} {opcio.text}")
+        print(f"{opcio.valor_int}️ {opcio.emoji} {opcio.text}")
     print()
 
 # Funció per gestionar una escena

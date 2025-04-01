@@ -3,7 +3,7 @@ from emojiquest_core import Opcio
 
 # Cruïlla options
 OPCIO_BOSC = Opcio(1, " 🌳 ", "Camí del bosc fosc")
-OPCIO_MUNTANYA = Opcio(2, " ⛰️ ", " Camí de la muntanya")
+OPCIO_MUNTANYA = Opcio(2, " ⛰️ ", "Camí de la muntanya")
 OPCIO_RIU = Opcio(3, " 🌊 ", "Camí del riu")
 OPCIO_EXPLORAR = Opcio(4, " 🔍 ", "Explorar els voltants")
 
@@ -36,12 +36,12 @@ OPCIO_TORNAR_CRUILLA = Opcio(4, " 🔄 ", "Tornar a la cruïlla inicial")
 
 # Castell Interior options
 OPCIO_AGAFAR_TRESOR = Opcio(1, " 💎 ", "Agafar el tresor")
-OPCIO_EXPLORAR_PASSADIS = Opcio(2, " 🕳️  ", "Explorar el passadís")
+OPCIO_EXPLORAR_PASSADIS = Opcio(2, " 🕳️ ", "Explorar el passadís")
 OPCIO_PASSAR_SILENCI = Opcio(3, " 💤 ", "Intentar passar silenciosament")
 OPCIO_SORTIR_CASTELL = Opcio(4, " 🔙 ", "Sortir del castell")
 
 # Castell Biblioteca options
-OPCIO_PREGUNTAR_GUARDIA = Opcio(1, " 🧙 ", "Preguntar a un guardià")
+OPCIO_PREGUNTAR_GUARDIA = Opcio(1, " 🧌 ", "Preguntar a un guardià")
 OPCIO_EXPLORAR_BIBLIOTECA = Opcio(2, " 🔍 ", "Explorar els voltants")
 OPCIO_TORNAR_ENTRADA = Opcio(3, " 🔙 ", "Tornar a l'entrada del castell")
 
