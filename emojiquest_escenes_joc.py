@@ -1,7 +1,7 @@
 from emojiquest_respostes_joc import *
 from emojiquest_opcions import *
 
-from emojiquest_core import Escena, context
+from emojiquest_core import Escena
 
 escenes = {
     Escena.CRUILLA: {

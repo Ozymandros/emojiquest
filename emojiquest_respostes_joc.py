@@ -3,7 +3,7 @@ from typing import Any, Dict
 from emojiquest_core import Escena, context, Opcio
 
 def resposta_bosc_llop_amic():
-    context["amic_llop"] = True
+    context.amic_llop = True
     return  {
         "text": "🤝 Intentes fer-te amic del llop! Sorprenentment, el llop accepta i es converteix en el teu aliat. ❤️",
         "seguent_escena": Escena.CASTELL
@@ -49,7 +49,7 @@ def resposta_riu_corrent_amic():
         }
 
 def resposta_castell_no_clau():
-    if context["amic_llop"]:
+    if context.amic_llop:
         return {
             "text": "🤝 El llop et troba la clau! Ara pots entrar al castell amb ella! 🔑🎉",
             "seguent_escena": Escena.CASTELL_INTERIOR
@@ -157,7 +157,7 @@ def resposta_castell_explorar():
     }
 
 def resposta_explorar(escena:Escena):
-    if(context["te_clau"] is True):
+    if(context.te_clau is True):
         if random.random() > 0.5:
             return {
                 "text": "Explores els voltants i trobes una flor rara! 🌸",
@@ -168,7 +168,8 @@ def resposta_explorar(escena:Escena):
                 "text": "Explores els voltants i trobes alguns bolets comestibles! 🍄",
                 "seguent_escena": escena
             }
-    context["te_clau"] = True  # Actualitzem l'estat global
+
+    context.te_clau = True  # Actualitzem l'estat global
     return {
         "text": "✅ Explores els voltants i trobes una clau misteriosa! 🔑",
         "seguent_escena": escena

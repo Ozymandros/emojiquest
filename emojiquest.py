@@ -1,7 +1,7 @@
 import time
 from typing import Optional, Dict, List, Any
 
-from emojiquest_core import Escena, Opcio, context
+from emojiquest_core import Context, Escena, Opcio, context
 from emojiquest_escenes_joc import escenes
 
 # Funció per obtenir una decisió de l'usuari (retorna l'objecte Opcio seleccionat)
@@ -41,12 +41,15 @@ def mostrar_opcions(opcions: List[Opcio]) -> None:
     print()
 
 # Funció per gestionar una escena
-def gestionar_escena(escena_id: Escena, context: Dict[str, Any] = {}) -> Optional[Escena]:
-    if escena_id not in escenes:
-        print(f"Error: L'escena {escena_id} no existeix.")
+def gestionar_escena() -> Optional[Escena]:
+    # Afegir l'escena actual a la llista d'escenes anteriors
+    context.escenes_anteriors.append(context.escena_actual)
+
+    if context.escena_actual not in escenes:
+        print(f"Error: L'escena {context.escena_actual} no existeix.")
         return None
 
-    escena = escenes[escena_id]
+    escena = escenes[context.escena_actual]
     print(escena["descripcio"])
 
     # Mostrar opcions amb la funció refactoritzada
@@ -60,30 +63,35 @@ def gestionar_escena(escena_id: Escena, context: Dict[str, Any] = {}) -> Optiona
     # Executar la funció de resposta si existeix
     if "respostes" in escena and opcio_seleccionada.valor_int in escena["respostes"]:
         resposta = escena["respostes"][opcio_seleccionada.valor_int]
+        # Si la resposta és un diccionari, actualitzem l'estat del joc
         if isinstance(resposta, str):
             print(resposta, '\n')
             return escena.get("seguent_escena")
+        # Si la resposta és una funció, l'executem
         elif callable(resposta):
             resposta = resposta()
             if isinstance(resposta, dict):
                 print(resposta["text"], '\n')
-                return resposta.get("seguent_escena")
+                escena_actual = resposta.get("seguent_escena")
+                if isinstance(escena_actual, Escena):
+                    context.escena_actual = escena_actual
+                else:
+                    return None
 
-    print()
-    print('\n')
     # Si no hi ha resposta específica, retornem la següent escena genèrica
-    return escena.get("seguent_escena")
+    context.escena_actual = context.escena_actual
+
+    return context.escena_actual
 
 # Funció principal del joc
 def aventura_emojiquest():
     print("🌲 Benvingut a EmojiQuest! Preparat per l'aventura? 🏰\n")
     time.sleep(1)
 
-    escena_actual = Escena.CRUILLA
-    context = {}  # Un diccionari per emmagatzemar l'estat del joc
+    context = Context() # Un diccionari per emmagatzemar l'estat del joc
 
-    while escena_actual:
-        escena_actual = gestionar_escena(escena_actual, context)
+    while context.escena_actual:
+        gestionar_escena()
 
     tornar = input("\nVols tornar a jugar? (s/n): ").strip().lower()
     if tornar == "s":

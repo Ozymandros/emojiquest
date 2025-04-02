@@ -1,10 +1,4 @@
-# Estat global (context) del joc
 from enum import Enum, auto
-
-context = {
-    "amic_llop": False,   # Inicia amb el llop com a enemic
-    "te_clau": False      # Inicia sense la clau
-}
 
 # Definim un Enum per a les diferents escenes del joc
 class Escena(Enum):
@@ -23,3 +17,16 @@ class Opcio:
         self.valor_int = valor_int
         self.emoji = emoji
         self.text = text
+
+class Context:
+    def __init__(self, amic_llop = False, te_clau = False, escena_actual = Escena.CRUILLA, escenes_anteriors: list[Escena] = []):
+        self.amic_llop = amic_llop  # Inicia amb el llop com a enemic
+        self.te_clau = te_clau    # Inicia sense la clau
+        self.escena_actual = escena_actual # Inicia amb la crulla
+        self.escenes_anteriors = escenes_anteriors # Inicialitza la llista d'escenes anteriors
+        self.opcions = [] # Inicialitza la llista d'opcions disponibles
+
+    def afegir_opcio(self, opcio: Opcio):
+        self.opcions.append(opcio)
+
+context = Context()  # Inicialitzem el context del joc
