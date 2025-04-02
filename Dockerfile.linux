@@ -1,0 +1,20 @@
+FROM python:3.9-slim
+# Instruccions específiques per a Linux
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy all Python files to the container
+COPY *.py /app/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Make sure the terminal handles UTF-8 properly for emoji display
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Run the application when the container starts
+CMD ["python", "-m", "emojiquest"]

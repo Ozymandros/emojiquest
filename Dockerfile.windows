@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# Instal·la Python
+SHELL ["cmd", "/S", "/C"]
+RUN powershell -Command "Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe -OutFile python-installer.exe"
+RUN python-installer.exe /quiet InstallAllUsers=1 PrependPath=1
+
+# Afegeix les teves instruccions addicionals aquí
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy all Python files to the container
+COPY *.py /app/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Make sure the terminal handles UTF-8 properly for emoji display
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Run the application when the container starts
+CMD ["python", "-m", "emojiquest"]
