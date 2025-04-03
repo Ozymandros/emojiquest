@@ -42,9 +42,6 @@ def mostrar_opcions(opcions: List[Opcio]) -> None:
 
 # Funció per gestionar una escena
 def gestionar_escena() -> Optional[Escena]:
-    # Afegir l'escena actual a la llista d'escenes anteriors
-    context.escenes_anteriors.append(context.escena_actual)
-
     if context.escena_actual not in escenes:
         print(f"Error: L'escena {context.escena_actual} no existeix.")
         return None
@@ -65,21 +62,23 @@ def gestionar_escena() -> Optional[Escena]:
         resposta = escena["respostes"][opcio_seleccionada.valor_int]
         # Si la resposta és un diccionari, actualitzem l'estat del joc
         if isinstance(resposta, str):
-            print(resposta, '\n')
             return escena.get("seguent_escena")
         # Si la resposta és una funció, l'executem
         elif callable(resposta):
             resposta = resposta()
             if isinstance(resposta, dict):
-                print(resposta["text"], '\n')
-                escena_actual = resposta.get("seguent_escena")
-                if isinstance(escena_actual, Escena):
-                    context.escena_actual = escena_actual
+                nova_escena_actual = resposta.get("seguent_escena")
+                if isinstance(nova_escena_actual, Escena):
+                    if (context.escena_actual == nova_escena_actual) or (nova_escena_actual in context.escenes_anteriors and nova_escena_actual != Escena.CRUILLA):
+                        nova_escena_actual = Escena.CASTELL
                 else:
                     return None
 
     # Si no hi ha resposta específica, retornem la següent escena genèrica
-    context.escena_actual = context.escena_actual
+    context.escena_actual = nova_escena_actual
+
+    # Afegir l'escena actual a la llista d'escenes anteriors
+    context.escenes_anteriors.append(context.escena_actual)
 
     return context.escena_actual
 
@@ -88,16 +87,25 @@ def aventura_emojiquest():
     print("🌲 Benvingut a EmojiQuest! Preparat per l'aventura? 🏰\n")
     time.sleep(1)
 
-    context = Context() # Un diccionari per emmagatzemar l'estat del joc
+    init_context()
 
-    while context.escena_actual:
-        gestionar_escena()
+    #import pdb; pdb.set_trace()  # Aquí s'activa la depuració
+
+    while True:
+        if not gestionar_escena(): break
 
     tornar = input("\nVols tornar a jugar? (s/n): ").strip().lower()
     if tornar == "s":
         aventura_emojiquest()
     else:
         print("Gràcies per jugar a EmojiQuest! 🎮🌟")
+
+def init_context():
+    global context
+    if context:
+        context.reiniciar()  # Reiniciem el context del joc
+    else:
+        context = Context()
 
 # Iniciar el joc
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import List, Optional
 
 # Definim un Enum per a les diferents escenes del joc
 class Escena(Enum):
@@ -19,11 +20,18 @@ class Opcio:
         self.text = text
 
 class Context:
-    def __init__(self, amic_llop = False, te_clau = False, escena_actual = Escena.CRUILLA, escenes_anteriors: list[Escena] = []):
+    def __init__(self, amic_llop = False, te_clau = False, escena_actual = Escena.CRUILLA, escenes_anteriors: Optional[List[Escena]] = None):
         self.amic_llop = amic_llop  # Inicia amb el llop com a enemic
         self.te_clau = te_clau    # Inicia sense la clau
         self.escena_actual = escena_actual # Inicia amb la crulla
-        self.escenes_anteriors = escenes_anteriors # Inicialitza la llista d'escenes anteriors
+        self.escenes_anteriors = escenes_anteriors or [] # Inicialitza la llista d'escenes anteriors
+        self.opcions = [] # Inicialitza la llista d'opcions disponibles
+
+    def reiniciar(self, amic_llop = False, te_clau = False, escena_actual = Escena.CRUILLA, escenes_anteriors: Optional[List[Escena]] = None):
+        self.amic_llop = amic_llop  # Inicia amb el llop com a enemic
+        self.te_clau = te_clau    # Inicia sense la clau
+        self.escena_actual = escena_actual # Inicia amb la crulla
+        self.escenes_anteriors = escenes_anteriors or [] # Inicialitza la llista d'escenes anteriors
         self.opcions = [] # Inicialitza la llista d'opcions disponibles
 
     def afegir_opcio(self, opcio: Opcio):

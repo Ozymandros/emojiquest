@@ -14,7 +14,7 @@ def resposta_bosc_llop_lluita():
     if random.random() < 0.5:
         return {
             "text": "⚔️ Lluites contra el llop! Guanyes!",
-            "seguent_escena": Escena.CASTELL
+            "seguent_escena": Escena.RIU_CORRENT
         }
     else:
         return {
@@ -87,7 +87,7 @@ def resposta_bosc_llop_fugir():
 def resposta_bosc_llop_estrategia():
     return {
         "text": "🧠 Penses una estratègia i enganyes el llop per escapar!",
-        "seguent_escena": Escena.CASTELL
+        "seguent_escena": Escena.RIU_CORRENT
     }
 
 def resposta_bosc_llop_tornar_cruilla():
@@ -111,7 +111,7 @@ def resposta_muntanya_roca_buscar_cami():
 def resposta_muntanya_roca_pensar():
     return {
         "text": "🧠 Penses en una manera d'escalatar la roca i passes! 🪜",
-        "seguent_escena": Escena.CASTELL
+        "seguent_escena": Escena.RIU_CORRENT
     }
 
 def resposta_muntanya_roca_tornar_cruilla():
@@ -129,7 +129,7 @@ def resposta_riu_corrent_lluitar():
 def resposta_riu_corrent_buscar_pont():
     return {
         "text": "🏃 Fugues cap a un pont a prop i el creues amb seguretat! ",
-        "seguent_escena": Escena.CASTELL
+        "seguent_escena": Escena.MUNTANYA_ROCA
     }
 
 def resposta_riu_corrent_pensar():
