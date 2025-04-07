@@ -41,7 +41,7 @@ def mostrar_opcions(opcions: List[Opcio]) -> None:
     print()
 
 # Funció per gestionar una escena
-def gestionar_escena() -> Optional[Escena]:
+def gestionar_escena() -> Optional[Escena] | str:
     if context.escena_actual not in escenes:
         print(f"Error: L'escena {context.escena_actual} no existeix.")
         return None
@@ -50,22 +50,22 @@ def gestionar_escena() -> Optional[Escena]:
     print("Segueixes el teu camí...")
     if(context.amic_llop is True):
         print("El teu aliat llop et fa companyia. 🐺❤️\n")
-    print(escena["descripcio"], "\n")
+    print(escena.descripcio, "\n")
 
     # Mostrar opcions amb la funció refactoritzada
-    mostrar_opcions(escena["opcions"])
+    mostrar_opcions(escena.opcions)
 
     # Processar la selecció
-    opcio_seleccionada = triar_accio(escena["opcions"])
+    opcio_seleccionada = triar_accio(escena.opcions)
     if opcio_seleccionada is None:
         return None
 
     # Executar la funció de resposta si existeix
-    if "respostes" in escena and opcio_seleccionada.valor_int in escena["respostes"]:
-        resposta = escena["respostes"][opcio_seleccionada.valor_int]
+    if escena.respostes and opcio_seleccionada.valor_int in escena.respostes:
+        resposta = escena.respostes[opcio_seleccionada.valor_int]
         # Si la resposta és un diccionari, actualitzem l'estat del joc
         if isinstance(resposta, str):
-            return escena.get("seguent_escena")
+            return resposta
         # Si la resposta és una funció, l'executem
         elif callable(resposta):
             resposta = resposta()
