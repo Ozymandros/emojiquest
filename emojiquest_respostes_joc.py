@@ -122,7 +122,7 @@ def resposta_muntanya_roca_tornar_cruilla():
 
 def resposta_riu_corrent_lluitar():
     return {
-        "text": "⚔️ Intentes lluitar contra el corrent, però és massa fort. Necessites una altra estratègia!",
+        "text": "⚔️ Intentes lluitar contra el corrent 🌊💦... *splash!* És massa fort! Necessites una altra estratègia!",
         "seguent_escena": Escena.RIU_CORRENT
     }
 

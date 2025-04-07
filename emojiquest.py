@@ -47,7 +47,10 @@ def gestionar_escena() -> Optional[Escena]:
         return None
 
     escena = escenes[context.escena_actual]
-    print(escena["descripcio"])
+    print("Segueixes el teu camí...")
+    if(context.amic_llop is True):
+        print("El teu aliat llop et fa companyia. 🐺❤️\n")
+    print(escena["descripcio"], "\n")
 
     # Mostrar opcions amb la funció refactoritzada
     mostrar_opcions(escena["opcions"])

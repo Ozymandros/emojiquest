@@ -11,6 +11,7 @@ class Escena(Enum):
     CASTELL_INTERIOR = auto()
     CASTELL_BIBLIOTECA = auto()
     CASTELL_TRESOR = auto()
+    CASTELL_JARDI = auto()
 
 # Classe per emmagatzemar l'índex, l'emoji, la validesa i si ha de terminar el bucle
 class Opcio:
