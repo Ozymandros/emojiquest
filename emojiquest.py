@@ -1,132 +1,164 @@
 import time
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, List, Union, Callable, Any
 
 from emojiquest_core import Context, Escena, Opcio, context
 from emojiquest_escenes_joc import escenes
 
-delay=1
+# Constants
+DEFAULT_DELAY = 1
+PROMPT_OPCIONS = "Tria una opció (per índex o emoji {0}): "
+MISSATGE_NO_OPCIONS = "No hi ha opcions vàlides disponibles. El joc ha acabat."
+MISSATGE_OPCIO_INVALIDA = "Opció no vàlida o no disponible. Torna a intentar."
+MISSATGE_CONTINUACIO = "Segueixes el teu camí..."
+MISSATGE_LLOP_ALIAT = "El teu aliat llop et fa companyia. 🐺❤️"
+MISSATGE_BENVINGUDA = "🌲 Benvingut a EmojiQuest! Preparat per l'aventura? 🏰"
+MISSATGE_TORNAR_JUGAR = "Vols tornar a jugar? (s/n): "
+MISSATGE_COMIAT = "Gràcies per jugar a EmojiQuest! 🎮🌟"
 
-# Funció per obtenir una decisió de l'usuari (retorna l'objecte Opcio seleccionat)
-def triar_accio(opcions: List[Opcio]) -> Optional[Opcio]:
-    while True:
-        try:
-            # Mostrem només els emojis de les opcions que són vàlides
-            opcions_valides = [opcio for opcio in opcions]
-            if not opcions_valides:
-                print("No hi ha opcions vàlides disponibles. El joc ha acabat.")
-                return None
+class EmojiQuestGame:
+    def __init__(self, delay: int = DEFAULT_DELAY):
+        self.delay = delay
+        self.context = Context()
 
-            entrada = input(f"Tria una opció (per índex o emoji {', '.join([opcio.emoji.lstrip().rstrip() for opcio in opcions_valides])}): ").lstrip().rstrip()
+    def triar_accio(self, opcions: List[Opcio]) -> Optional[Opcio]:
+        """
+        Permet a l'usuari triar una acció d'entre les opcions disponibles.
+        Retorna l'opció seleccionada o None si no hi ha opcions vàlides.
+        """
+        opcions_valides = opcions
+        if not opcions_valides:
+            print(MISSATGE_NO_OPCIONS)
+            return None
 
-            # Comprovem si s'ha introduït un emoji vàlid
-            for opcio in opcions_valides:
-                if entrada == opcio.emoji.lstrip().rstrip():
-                    return opcio
-
-            # Comprovem si s'ha introduït un índex vàlid
+        emojis_text = ', '.join([opcio.emoji.strip() for opcio in opcions_valides])
+        
+        while True:
             try:
-                num = int(entrada)
-                for opcio in opcions_valides:
-                    if opcio.valor_int == num:
-                        return opcio
-            except ValueError:
-                pass
+                entrada = input(PROMPT_OPCIONS.format(emojis_text)).strip()
 
-            print("Opció no vàlida o no disponible. Torna a intentar.")
-        except Exception as e:
-            print(f"Error: {e}. Torna a intentar.")
-
-# Funció per mostrar les opcions disponibles
-def mostrar_opcions(opcions: List[Opcio]) -> None:
-    time.sleep(delay)
-    for opcio in opcions:
-        print(f"{opcio.valor_int}️ {opcio.emoji} {opcio.text}")
-    print()
-
-# Funció per gestionar una escena
-def gestionar_escena() -> Optional[Escena] | str:
-    if context.escena_actual not in escenes:
-        print(f"Error: L'escena {context.escena_actual} no existeix.")
-        return None
-
-    escena = escenes[context.escena_actual]
-
-    if len(context.escenes_anteriors) and context.escena_actual != Escena.CRUILLA:
-        time.sleep(delay)
-        print("\n", "Segueixes el teu camí...", "\n")
-        time.sleep(delay)
-    elif(len(context.escenes_anteriors) and context.escena_actual == Escena.CRUILLA):
-        time.sleep(delay)
-        print("")
-
-    if(context.amic_llop is True):
-        print("El teu aliat llop et fa companyia. 🐺❤️\n")
-    print(escena.descripcio, "\n")
-
-    opcions = [opcio for opcio in escena.opcions if opcio is not None]
-    # Mostrar opcions amb la funció refactoritzada
-    mostrar_opcions(opcions)
-
-    # Processar la selecció
-    opcio_seleccionada = triar_accio(opcions)
-    if opcio_seleccionada is None:
-        return None
-
-    # Executar la funció de resposta si existeix
-    if escena.respostes and opcio_seleccionada.valor_int in escena.respostes:
-        resposta = escena.respostes[opcio_seleccionada.valor_int]
-        # Si la resposta és un diccionari, actualitzem l'estat del joc
-        if isinstance(resposta, str):
-            print(resposta)
-            return resposta
-        # Si la resposta és una funció, l'executem
-        elif callable(resposta):
-            resposta = resposta()
-            if isinstance(resposta, dict):
-                nova_escena_actual = resposta.get("seguent_escena", "\n")
-                print(resposta.get("text"))
-                if isinstance(nova_escena_actual, Escena):
-                    if (context.escena_actual == nova_escena_actual or nova_escena_actual in context.escenes_anteriors) and nova_escena_actual != Escena.CRUILLA:
-                        print(nova_escena_actual)
-                        nova_escena_actual = Escena.CASTELL
-                else:
+                if entrada is None:
                     return None
+                
+                # Comprovar per emoji
+                for opcio in opcions_valides:
+                    if entrada == opcio.emoji.strip():
+                        return opcio
+                
+                # Comprovar per índex
+                try:
+                    num = int(entrada)
+                    for opcio in opcions_valides:
+                        if opcio.valor_int == num:
+                            return opcio
+                except ValueError:
+                    pass
+                
+                print(MISSATGE_OPCIO_INVALIDA)
+            except Exception as e:
+                print(f"Error: {e}. Torna a intentar.")
 
-    # Si no hi ha resposta específica, retornem la següent escena genèrica
-    context.escena_actual = nova_escena_actual
+    def mostrar_opcions(self, opcions: List[Opcio]) -> None:
+        """Mostra les opcions disponibles a l'usuari."""
+        time.sleep(self.delay)
+        for opcio in opcions:
+            print(f"{opcio.valor_int}️ {opcio.emoji} {opcio.text}")
+        print()
 
-    # Afegir l'escena actual a la llista d'escenes anteriors
-    context.escenes_anteriors.append(context.escena_actual)
+    def processa_resposta(self, escena: Any, opcio_seleccionada: Opcio) -> Union[Escena, str, None]:
+        """Processa la resposta a una opció seleccionada i retorna la següent escena."""
+        if escena.respostes and opcio_seleccionada.valor_int in escena.respostes:
+            resposta = escena.respostes[opcio_seleccionada.valor_int]
+            
+            if isinstance(resposta, str):
+                print(resposta)
+                return resposta
+            elif callable(resposta):
+                resultat = resposta()
+                if isinstance(resultat, dict):
+                    nova_escena = resultat.get("seguent_escena", None)
+                    print(resultat.get("text", ""))
+                    
+                    if isinstance(nova_escena, Escena):
+                        if ((self.context.escena_actual == nova_escena or 
+                            nova_escena in self.context.escenes_anteriors) and 
+                            nova_escena != Escena.CRUILLA):
+                            return Escena.CASTELL
+                        return nova_escena
+        return None
 
-    return context.escena_actual
+    def gestionar_escena(self) -> Optional[Union[Escena, str]]:
+        """Gestiona una escena del joc, mostrant descripcions i processant opcions."""
+        if self.context.escena_actual not in escenes:
+            print(f"Error: L'escena {self.context.escena_actual} no existeix.")
+            return None
 
-# Funció principal del joc
+        escena = escenes[self.context.escena_actual]
+
+        # Mostrar missatges de context
+        self._mostrar_context_escena()
+        
+        # Mostrar descripció
+        print(escena.descripcio, "\n")
+
+        # Mostrar opcions
+        opcions = [opcio for opcio in escena.opcions if opcio is not None]
+        self.mostrar_opcions(opcions)
+
+        # Processar selecció
+        opcio_seleccionada = self.triar_accio(opcions)
+        if opcio_seleccionada is None:
+            return None
+
+        # Processar resposta i obtenir següent escena
+        nova_escena = self.processa_resposta(escena, opcio_seleccionada)
+
+        # Si no hi ha resposta específica, continuar amb l'escena actual
+        if nova_escena is None:
+            return None
+        
+        # Actualitzar l'escena actual i afegir-la a la història
+        if isinstance(nova_escena, Escena):
+            self.context.escena_actual = nova_escena
+            self.context.escenes_anteriors.append(self.context.escena_actual)
+            
+        return nova_escena
+
+    def _mostrar_context_escena(self):
+        """Mostra missatges contextuals abans de l'escena actual."""
+        if len(self.context.escenes_anteriors):
+            if self.context.escena_actual != Escena.CRUILLA:
+                time.sleep(self.delay)
+                print("\n", MISSATGE_CONTINUACIO, "\n")
+                time.sleep(self.delay)
+            else:
+                time.sleep(self.delay)
+                print("")
+
+        if self.context.amic_llop is True:
+            print(f"{MISSATGE_LLOP_ALIAT}\n")
+
+    def jugar(self):
+        """Inicia i controla el flux principal del joc."""
+        print(f"{MISSATGE_BENVINGUDA}\n")
+        time.sleep(1)
+
+        self.context.reiniciar()
+
+        while True:
+            if not self.gestionar_escena():
+                break
+
+        tornar = input(f"\n{MISSATGE_TORNAR_JUGAR}").strip().lower()
+        if tornar == "s":
+            self.jugar()
+        else:
+            print(MISSATGE_COMIAT)
+
+# Funció principal
 def aventura_emojiquest():
-    print("🌲 Benvingut a EmojiQuest! Preparat per l'aventura? 🏰\n")
-    time.sleep(1)
-
-    init_context()
-
-    #import pdb; pdb.set_trace()  # Aquí s'activa la depuració
-
-    while True:
-        if not gestionar_escena(): break
-
-    tornar = input("\nVols tornar a jugar? (s/n): ").strip().lower()
-    if tornar == "s":
-        aventura_emojiquest()
-    else:
-        print("Gràcies per jugar a EmojiQuest! 🎮🌟")
-
-def init_context():
-    global context
-    if context:
-        context.reiniciar()  # Reiniciem el context del joc
-    else:
-        context = Context()
+    joc = EmojiQuestGame()
+    joc.jugar()
 
 # Iniciar el joc
 if __name__ == "__main__":
     aventura_emojiquest()
-    # Si el joc es tanca, es pot afegir un missatge de comiat aquí
-    #print("Gràcies per jugar a EmojiQuest! 🎮🌟")
