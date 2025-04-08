@@ -51,20 +51,24 @@ def gestionar_escena() -> Optional[Escena] | str:
 
     escena = escenes[context.escena_actual]
 
-    if(context.escena_actual != Escena.CRUILLA):
+    if len(context.escenes_anteriors) and context.escena_actual != Escena.CRUILLA:
         time.sleep(delay)
         print("\n", "Segueixes el teu camí...", "\n")
         time.sleep(delay)
+    elif(len(context.escenes_anteriors) and context.escena_actual == Escena.CRUILLA):
+        time.sleep(delay)
+        print("")
 
     if(context.amic_llop is True):
         print("El teu aliat llop et fa companyia. 🐺❤️\n")
     print(escena.descripcio, "\n")
 
+    opcions = [opcio for opcio in escena.opcions if opcio is not None]
     # Mostrar opcions amb la funció refactoritzada
-    mostrar_opcions(escena.opcions)
+    mostrar_opcions(opcions)
 
     # Processar la selecció
-    opcio_seleccionada = triar_accio(escena.opcions)
+    opcio_seleccionada = triar_accio(opcions)
     if opcio_seleccionada is None:
         return None
 
@@ -82,7 +86,8 @@ def gestionar_escena() -> Optional[Escena] | str:
                 nova_escena_actual = resposta.get("seguent_escena", "\n")
                 print(resposta.get("text"))
                 if isinstance(nova_escena_actual, Escena):
-                    if (context.escena_actual == nova_escena_actual) or (nova_escena_actual in context.escenes_anteriors and nova_escena_actual != Escena.CRUILLA):
+                    if (context.escena_actual == nova_escena_actual or nova_escena_actual in context.escenes_anteriors) and nova_escena_actual != Escena.CRUILLA:
+                        print(nova_escena_actual)
                         nova_escena_actual = Escena.CASTELL
                 else:
                     return None

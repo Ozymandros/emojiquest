@@ -8,8 +8,8 @@ from typing import Callable, Dict, List, Union
 @dataclass
 class EscenaData:
     descripcio: str
-    opcions: List[Opcio]
-    respostes: Dict[int, Callable[[], Resposta] | Resposta]
+    opcions: List[Opcio | None]
+    respostes: Dict[int, Callable[[], Resposta] | Resposta | None]
 
 escenes: Dict[Escena, EscenaData] = {
     Escena.CRUILLA: EscenaData(
@@ -82,13 +82,13 @@ escenes: Dict[Escena, EscenaData] = {
         descripcio=("🎉 Has arribat al castell misteriós! 🏰 La porta està tancada.\n"
                     "🔑 Tens la clau per entrar?"),
         opcions=[
-            Opcions.Castell.TINC_CLAU,
+            Opcions.Castell.TINC_CLAU if context.te_clau else None,
             Opcions.Castell.NO_TINC_CLAU,
             Opcions.Castell.EXPLORAR,
             Opcions.Bosc.TORNAR_CRUILLA
         ],
         respostes={
-            1: resposta_castell_si_clau,
+            1: resposta_castell_si_clau if context.te_clau else None,
             2: resposta_castell_no_clau,
             3: resposta_castell_explorar,
             4: tornar_a_cruilla
