@@ -28,7 +28,7 @@ escenes: Dict[Escena, EscenaData] = {
         }
     ),
     Escena.BOSC_LLOP: EscenaData(
-        descripcio="⚠️ Et trobes amb un llop famolenc 🐺! Com vols reaccionar?",
+        descripcio="⚠️ Mentre avances pel bosc espès i silenciós 🌳, notes uns ulls brillants entre els matolls... Un llop famolenc 🐺 t’observa atentament, amb les dents ensenyades i una postura amenaçadora 😱. Sents la tensió a l’aire. \n¿Com vols reaccionar?",
         opcions=[
             Opcions.Bosc.LLUITAR,
             Opcions.Bosc.FUGIR,
@@ -45,7 +45,7 @@ escenes: Dict[Escena, EscenaData] = {
         }
     ),
     Escena.MUNTANYA_ROCA: EscenaData(
-        descripcio="⚠️ Hi ha una roca enorme 🪨 bloquejant el camí! Com vols reaccionar?",
+        descripcio="⚠️ Després d’una llarga pujada per un sender costerut ⛰️, t’adones que una roca enorme 🪨 ha caigut recentment i bloqueja completament el pas 🤔. No sembla fàcil de moure ni d’esquivar. El vent bufa fort i la llum comença a minvar. \n¿Com vols reaccionar?",        
         opcions=[
             Opcions.Muntanya.TRENCAR_ROCA,
             Opcions.Muntanya.BUSCAR_CAMI,
@@ -62,7 +62,7 @@ escenes: Dict[Escena, EscenaData] = {
         }
     ),
     Escena.RIU_CORRENT: EscenaData(
-        descripcio="⚠️ El corrent del riu és molt fort! 🌊 Com vols reaccionar?",
+        descripcio="⚠️ Arribes a un riu de corrent intens 🌊, les aigües bramen i esquitxen amb força contra les roques 😨. No hi ha cap pont a la vista i el corrent sembla massa fort per travessar-lo sense precaució. El temps corre i has de prendre una decisió. \n¿Com vols reaccionar?",
         opcions=[
             Opcions.Riu.LLUITAR_CORRENT,
             Opcions.Riu.BUSCAR_PONT,

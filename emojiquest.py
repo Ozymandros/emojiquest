@@ -4,6 +4,8 @@ from typing import Optional, Dict, List, Any
 from emojiquest_core import Context, Escena, Opcio, context
 from emojiquest_escenes_joc import escenes
 
+delay=1
+
 # Funció per obtenir una decisió de l'usuari (retorna l'objecte Opcio seleccionat)
 def triar_accio(opcions: List[Opcio]) -> Optional[Opcio]:
     while True:
@@ -36,6 +38,7 @@ def triar_accio(opcions: List[Opcio]) -> Optional[Opcio]:
 
 # Funció per mostrar les opcions disponibles
 def mostrar_opcions(opcions: List[Opcio]) -> None:
+    time.sleep(delay)
     for opcio in opcions:
         print(f"{opcio.valor_int}️ {opcio.emoji} {opcio.text}")
     print()
@@ -47,7 +50,12 @@ def gestionar_escena() -> Optional[Escena] | str:
         return None
 
     escena = escenes[context.escena_actual]
-    print("Segueixes el teu camí...")
+
+    if(context.escena_actual != Escena.CRUILLA):
+        time.sleep(delay)
+        print("\n", "Segueixes el teu camí...", "\n")
+        time.sleep(delay)
+
     if(context.amic_llop is True):
         print("El teu aliat llop et fa companyia. 🐺❤️\n")
     print(escena.descripcio, "\n")
@@ -65,12 +73,14 @@ def gestionar_escena() -> Optional[Escena] | str:
         resposta = escena.respostes[opcio_seleccionada.valor_int]
         # Si la resposta és un diccionari, actualitzem l'estat del joc
         if isinstance(resposta, str):
+            print(resposta)
             return resposta
         # Si la resposta és una funció, l'executem
         elif callable(resposta):
             resposta = resposta()
             if isinstance(resposta, dict):
-                nova_escena_actual = resposta.get("seguent_escena")
+                nova_escena_actual = resposta.get("seguent_escena", "\n")
+                print(resposta.get("text"))
                 if isinstance(nova_escena_actual, Escena):
                     if (context.escena_actual == nova_escena_actual) or (nova_escena_actual in context.escenes_anteriors and nova_escena_actual != Escena.CRUILLA):
                         nova_escena_actual = Escena.CASTELL
